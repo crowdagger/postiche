@@ -151,10 +151,32 @@ Output:
 Look! An example! Another example! A final example!
 ```
 
+#### Inverted sections
 
+Sometimes, you want something to be displayed when a value is *not*
+set. In order to do this, you can mark an "inverted section" with the
+`{{^tag}}...{{/tag}}` syntax.
 
-* `{{^var}}...{{/var}}` will only be displayed if var is not false or empty
-* That's all for now!
+Such "inverted section" will only be displayed if var is false or
+empty, similar to the `unless` operator.
+
+Template:
+
+```
+A little {{^pred}} silly{{/pred}} example
+```
+
+Context:
+
+```scheme
+'()
+```
+
+Output:
+
+```
+A little silly example
+```
 
 ## Escaping
 
