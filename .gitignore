@@ -1,1 +1,15 @@
 *.log
+tests/test.trs
+pre-inst-env*
+*.go
+autom4te.cache
+build-aux
+aclocal.m4
+Makefile.in
+Makefile
+INSTALL
+NEWS
+CHANGELOG
+config.status
+configure
+*~

@@ -174,7 +174,7 @@ Additional parameters may include strings for opening and closing delimiters"
                  ""))]
           [_ (error "WTF?!" x)]
           )]
-       [else (error "Template should be a list of string and symbols" e)]))
+       [else (error "Template should be a list of string and symbols" x)]))
     
     (define (apply-template template context)
       "Apply template with values given by context

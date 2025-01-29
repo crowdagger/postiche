@@ -1,0 +1,30 @@
+(hall-description
+  (name "postiche")
+  (prefix "")
+  (version "0.1")
+  (author "Lizzie Crowdagger")
+  (email "lizzie at crowdagger.fr")
+  (copyright (2025))
+  (synopsis "Minimal scheme implementation of string templates inspired by mustache")
+  (description "")
+  (home-page "https://github.com/crowdagger/postiche")
+  (license lgpl2.1+)
+  (dependencies `())
+  (skip ())
+  (features
+    ((guix #f)
+     (use-guix-specs-for-dependencies #f)
+     (native-language-support #f)
+     (licensing #f)))
+  (files (libraries
+           (;(scheme-file "postiche")
+            (directory "postiche" ((scheme-file "mustache")))))
+         (tests ((directory "tests" ((scheme-file "test")))))
+         (programs ((directory "scripts" ())))
+         (documentation
+           ((text-file "README.md")
+            (text-file "LICENSE")))
+         (infrastructure
+           ((scheme-file "guix")
+            (text-file ".gitignore")
+            (scheme-file "hall")))))

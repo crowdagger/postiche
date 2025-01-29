@@ -3,7 +3,6 @@
 Minimal scheme implementation of string templates inspired by
 [mustache](https://mustache.github.io/).
 
-
 ## Usage
 
 Put `{{stuff}}` inside of strings and it will be replaced by some
