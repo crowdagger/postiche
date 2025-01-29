@@ -128,6 +128,28 @@ A little contrived and silly example
 
 This syntax is, however, more useful if the value is a list.
 
+#### Lists
+
+Indeed, when `tag` corresponds to a list, the section will be repeated
+for every element of the list.
+
+Template:
+
+```
+Look!{{#foo}} {{.}} example!{{/foo}}
+```
+
+Context:
+
+```scheme
+'(( foo . ("An" "Another" "A final")))
+```
+
+Output:
+
+```
+Look! An example! Another example! A final example!
+```
 
 
 

@@ -46,6 +46,10 @@
   (define tpl-if2 (process-template "A {{#bar}}silly {{.}}{{/bar}}test"))
   (test-equal "A test" (apply-template tpl-if2 '()))
   (test-equal "A silly foo test" (apply-template tpl-if2 '(( bar . "foo " ))))
+
+  (define tpl-for1 (process-template "Look!{{#foo}} {{.}} example!{{/foo}}"))
+  (test-equal "Look! An example! Another example! A final example!"
+    (apply-template tpl-for1 '(( foo . ("An" "Another" "A final"))))) 
   
   (define tpl-unless (process-template "A {{^bar}}silly {{/bar}}test"))
   (test-equal "A silly test" (apply-template tpl-unless '()))
