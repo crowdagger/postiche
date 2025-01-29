@@ -42,17 +42,13 @@
 {{/animals}}
 ")
 
-(define cat
-  '((name . "cat")
-    (noise . "meow")))
-
-(define dog
-  '((name . "dog")
-    (noise . "woof")))
-
-
 (define complex-ctx
-  `((animals . (,cat ,dog))))
+  '((animals . (((name . "cat")
+                 (noise . "meow"))
+                ((name . "dog")
+                 (noise . "woof"))
+                ((name . "duck")
+                 (noise . "quack"))))))
 
 
 

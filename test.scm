@@ -58,5 +58,31 @@
   (test-equal "A less silly test" (apply-template tpl-unless2 '((adj . "less silly"))))
   (test-equal "A test" (apply-template tpl-unless2 '((bar . "whatever")
                                                           (adj . "less silly"))))
+
+  (define complex
+  "{{#animals}} * {{name}}: \"{{noise}}\"
+{{/animals}}")
+  
+  (define complex-ctx
+  '((animals . (((name . "cat")
+                 (noise . "meow"))
+                ((name . "dog")
+                 (noise . "woof"))
+                ((name . "duck")
+                 (noise . "quack"))))))
+
+
+
+  (define tpl-cplx (process-template complex))
+  (test-equal " * cat: \"meow\"
+ * dog: \"woof\"
+ * duck: \"quack\"
+"
+    (apply-template tpl-cplx complex-ctx))
+
   )
+
+
+
+
 (test-end "template")
