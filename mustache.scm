@@ -125,8 +125,8 @@ Context must be an association list"
                          (let ([v (assoc tag context)])
                            (if (or (eq? #f v)
                                    (eq? '() v))
-                               ""
-                               (apply-template sub context)))]
+                               (apply-template sub context)
+                               ""))]
                         [_ (error "WTF?!" x)]
                         )]
                      [else (error "Template should be a list of string and symbols" template)]))
