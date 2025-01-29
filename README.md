@@ -151,6 +151,44 @@ Output:
 Look! An example! Another example! A final example!
 ```
 
+#### List of associations lists
+
+For those who are not afraid of nested parenthesis, it is also
+possible to set each individual element of the list to an association
+list. In this case, it is possible to access named elements of the
+current item:
+
+Template:
+
+```
+ANIMAL NOISES
+=============
+{{#animals}} * {{name}}: \"{{noise}}\"
+{{/animals}}
+```
+
+Context :
+
+```scheme
+'((animals . (((name . "cat")
+               (noise . "meow"))
+              ((name . "dog")
+               (noise . "woof"))
+              ((name . "duck")
+               (noise . "quack")))))
+```
+
+Output: 
+
+```
+ANIMAL NOISES
+=============
+ * cat: "meow"
+ * dog: "woof"
+ * duck: "quack"
+```
+
+
 #### Inverted sections
 
 Sometimes, you want something to be displayed when a value is *not*
