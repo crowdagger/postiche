@@ -38,6 +38,14 @@
   (define tpl2 (process-template "foo{{bar}}baz"))
   (test-equal (apply-template tpl2 '((bar . "42"))) "foo42baz")
   (test-error (apply-template tpl2 '((foo . 42))))
+
+  (define tpl-if (process-template "A {{#bar}}silly {{/bar}}test"))
+  (test-equal "A test" (apply-template tpl-if '()))
+  (test-equal "A silly test" (apply-template tpl-if '(( bar . "foo" ))))
+
+  (define tpl-if2 (process-template "A {{#bar}}silly {{.}}{{/bar}}test"))
+  (test-equal "A test" (apply-template tpl-if2 '()))
+  (test-equal "A silly foo test" (apply-template tpl-if2 '(( bar . "foo " ))))
   
   (define tpl-unless (process-template "A {{^bar}}silly {{/bar}}test"))
   (test-equal "A silly test" (apply-template tpl-unless '()))

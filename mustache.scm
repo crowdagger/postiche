@@ -121,10 +121,27 @@ Context must be an association list"
                      [(list? x)
                       ;; Special cases are more complicated
                       (match x
+                        [('for tag sub)
+                         (let ([v (assoc tag context)])
+                           (if (or (eq? #f v)
+                                   (eq? #f (cdr v))
+                                   (eq? '() (cdr v)))
+                               ""
+                               (let* ([v (cdr v)]
+                                      [subcontext
+                                      (if (list? v)
+                                          (append v context)
+                                          (append `(( ,(string->symbol ".") . ,v))
+                                                  context))])
+                                     (display "subcontext: ")
+                                     (display subcontext)
+                                     (newline)
+                                     (apply-template sub subcontext))))]
                         [('unless tag sub)
                          (let ([v (assoc tag context)])
                            (if (or (eq? #f v)
-                                   (eq? '() v))
+                                   (eq? #f (cdr v))
+                                   (eq? '() (cdr v)))
                                (apply-template sub context)
                                ""))]
                         [_ (error "WTF?!" x)]
