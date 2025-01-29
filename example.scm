@@ -1,6 +1,4 @@
-(add-to-load-path "..")
-
-
+(add-to-load-path ".")
 (import (scheme base)
         (scheme write)
         (postiche mustache))

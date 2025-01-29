@@ -1,6 +1,4 @@
-(add-to-load-path "..")
-(install-r7rs!)
-
+(add-to-load-path ".")
 (import (scheme base)
         (srfi srfi-64)
         (postiche mustache))
