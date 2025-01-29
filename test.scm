@@ -38,5 +38,9 @@
   (define tpl2 (process-template "foo{{bar}}baz"))
   (test-equal (apply-template tpl2 '((bar . "42"))) "foo42baz")
   (test-error (apply-template tpl2 '((foo . 42))))
+  
+  (define tpl-unless (process-template "A {{^bar}}silly {{/bar}}test"))
+  (test-equal "A test" (apply-template tpl-unless '()))
+  (test-equal "A silly test" (apply-template tpl-unless '((bar . "whatever"))))
   )
 (test-end "template")

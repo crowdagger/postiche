@@ -10,5 +10,11 @@
 (display (apply-template tpl
                          '((adj . "silly"))))
 
-(write (process-template "This is a {{#adj}} {{name}}example{{/adj}} \n"))
+
+(define tpl2 (process-template "This is a {{^pred}}silly {{/pred}} example\n"))
+
+(write tpl2)
 (newline)
+
+(display (apply-template tpl2 '()))
+(display (apply-template tpl2 '((pred . "whatever"))))

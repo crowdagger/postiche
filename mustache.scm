@@ -2,7 +2,8 @@
   (import (scheme base)
           (scheme write)
           (srfi srfi-11)
-          (srfi srfi-13))
+          (srfi srfi-13)
+          (ice-9 match))
   (export process-template apply-template)
   (begin
     (define (unwrap-tag tag o-d c-d)
@@ -64,13 +65,11 @@
                                              b))])
               (cond [(or (string-prefix? "#" tag)
                          (string-prefix? "^" tag))
-                     (handle-hard tag string-rest o-d c-d)
-                     ]
+                     (handle-hard tag string-rest o-d c-d)]
                     [else (cons (string->symbol tag)
                                 (find-opening string-rest
                                               o-d
-                                              c-d))]
-                    )))))
+                                              c-d))])))))
     
     (define (find-opening s o-d c-d)
       "Search a strïng for opening delimiter and returns ???"
@@ -119,6 +118,17 @@ Context must be an association list"
                             (cdr v)
                             (error "Context does not include key"
                                    x)))]
+                     [(list? x)
+                      ;; Special cases are more complicated
+                      (match x
+                        [('unless tag sub)
+                         (let ([v (assoc tag context)])
+                           (if (or (eq? #f v)
+                                   (eq? '() v))
+                               ""
+                               (apply-template sub context)))]
+                        [_ (error "WTF?!" x)]
+                        )]
                      [else (error "Template should be a list of string and symbols" template)]))
                   template)))
     
