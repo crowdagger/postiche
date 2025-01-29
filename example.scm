@@ -9,3 +9,6 @@
 
 (display (apply-template tpl
                          '((adj . "silly"))))
+
+(write (process-template "This is a {{#adj}} {{name}}example{{/adj}} \n"))
+(newline)
