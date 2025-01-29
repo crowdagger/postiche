@@ -3,6 +3,7 @@
           (scheme write)
           (srfi srfi-11)
           (srfi srfi-13)
+          (srfi srfi-28)
           (ice-9 match))
   (export process-template apply-template)
   (begin
@@ -103,50 +104,69 @@ Additional parameters may include strings for opening and closing delimiters"
                             (cadr rest)))
                  "}}")])
         (find-opening string o-d c-d)))
+
+    (define (ctx-add-value v ctx)
+      "Adds a singe value (bound to '.) to ctx"
+      (append `(( ,(string->symbol ".") . ,(format "~a" v)))
+              ctx))
+
+    (define (apply-to-element x context)
+      (cond
+       [(string? x) x]
+       [(symbol? x)
+        (let ([v (assoc x context)])
+          (if v
+              (cdr v)
+              (error "Context does not include key"
+                     x)))]
+       [(list? x)
+        ;; Special cases are more complicated
+        (match x
+          [('for tag sub)
+           (let ([v (assoc tag context)])
+             (if (or (eq? #f v)
+                     (eq? #f (cdr v))
+                     (eq? '() (cdr v)))
+                 ""
+                 (let lp ([v (cdr v)]
+                       [rest '()])
+                   (cond
+                    [(not (list? v)) ;
+                     (if (eq? rest '())
+                         (apply-template sub
+                                         (ctx-add-value v context))
+                         (string-append
+                          (apply-template sub
+                                          (ctx-add-value v context))
+                          (lp (car rest) (cdr rest))))]
+                    [(eq? '() v)
+                     ""]
+                    [(not (list? (car v))) ; Inside is a single list
+                     (lp (car v) (cdr v))]
+                     [else (error "Unimplemented")]
+                     ))))]
+                    
+          [('unless tag sub)
+           (let ([v (assoc tag context)])
+             (if (or (eq? #f v)
+                     (eq? #f (cdr v))
+                     (eq? '() (cdr v)))
+                 (apply-template sub context)
+                 ""))]
+          [_ (error "WTF?!" x)]
+          )]
+       [else (error "Template should be a list of string and symbols" template)]))
     
     (define (apply-template template context)
       "Apply template with values given by context
 
 Context must be an association list"
+      (display "context: ")
+      (write context)
+      (newline)
       (apply string-append
              (map (lambda (x)
-                    (cond
-                     [(string? x) x]
-                     [(symbol? x)
-                      (let ([v (assoc x context)])
-                        (if v
-                            (cdr v)
-                            (error "Context does not include key"
-                                   x)))]
-                     [(list? x)
-                      ;; Special cases are more complicated
-                      (match x
-                        [('for tag sub)
-                         (let ([v (assoc tag context)])
-                           (if (or (eq? #f v)
-                                   (eq? #f (cdr v))
-                                   (eq? '() (cdr v)))
-                               ""
-                               (let* ([v (cdr v)]
-                                      [subcontext
-                                      (if (list? v)
-                                          (append v context)
-                                          (append `(( ,(string->symbol ".") . ,v))
-                                                  context))])
-                                     (display "subcontext: ")
-                                     (display subcontext)
-                                     (newline)
-                                     (apply-template sub subcontext))))]
-                        [('unless tag sub)
-                         (let ([v (assoc tag context)])
-                           (if (or (eq? #f v)
-                                   (eq? #f (cdr v))
-                                   (eq? '() (cdr v)))
-                               (apply-template sub context)
-                               ""))]
-                        [_ (error "WTF?!" x)]
-                        )]
-                     [else (error "Template should be a list of string and symbols" template)]))
+                    (apply-to-element x context))
                   template)))
     
     ))

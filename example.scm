@@ -20,9 +20,11 @@
 
 (display (apply-template (process-template template1) ctx1))
 
-(define template2 "A little {{#pred}}{{.}}silly{{/pred}} example")
+(define template2 "A little {{#pred}}{{.}}silly{{/pred}} example\n")
 (define ctx2 '(( pred . "contrived and ")))
 (display (apply-template (process-template template2) ctx2))
+
+(display (apply-template (process-template template2) '(( pred . (1 2 3)))))
 
 (define tpl2 (process-template "This is a {{^pred}}silly {{/pred}} example\n"))
 
