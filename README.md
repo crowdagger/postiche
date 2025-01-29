@@ -32,6 +32,7 @@ Syntax is inspired by mustache, but everything is not (and won't be)
 implemented. 
 
 * `{{var}}` will be replaced by the value of `var`
+* `{{^var}}...{{/var}}` will only be displayed if var is not false or empty
 * That's all for now!
 
 ## Escaping
