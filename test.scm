@@ -18,8 +18,20 @@
   (test-equal tpl3 tpl2)
 
   ;; Test changing delimiter
-  (define tpl4 (process-template"foo< bar>baz" "<" ">"))
+  (define tpl4 (process-template "foo< bar>baz" "<" ">"))
   (test-equal tpl2 tpl4)
+
+  ;; Test for
+  (test-error (process-template "foo{{#bar))baz"))
+  (define tpl5 (process-template "foo{{#bar}}baz{{/bar}}quux"))
+  (test-equal '("foo" (for bar ("baz")) "quux")
+    tpl5)
+
+    ;; Test unless
+  (test-error (process-template "foo{{^bar))baz"))
+  (define tpl6 (process-template "foo{{^bar}}baz{{/bar}}quux"))
+  (test-equal '("foo" (unless bar ("baz")) "quux")
+    tpl6)
   )
 
 (test-group "apply-template"
