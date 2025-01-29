@@ -5,8 +5,20 @@
           (srfi srfi-13)
           (srfi srfi-28)
           (ice-9 match))
-  (export process-template apply-template)
+  (export process-template apply-template alist?)
   (begin
+    (define (alist? x)
+      "Returs #t if x is a valid list of (x . y) pairs"
+      (match x
+        ('() #t)
+        (((foo . bar) . rest)
+         (if (or (eq? '() foo)
+                  (eq? '() bar))
+             #f
+             (alist? rest)))
+      (_ #f)))
+
+    
     (define (unwrap-tag tag o-d c-d)
       "Unwrap a tag starting with # or ^ and returns multiple values:
 * the special character (e.g. '^ or '#{#}#)
@@ -107,8 +119,13 @@ Additional parameters may include strings for opening and closing delimiters"
 
     (define (ctx-add-value v ctx)
       "Adds a singe value (bound to '.) to ctx"
+      (display (format "Adding ~a to context ~a\n" v ctx))
       (append `(( ,(string->symbol ".") . ,(format "~a" v)))
               ctx))
+
+    (define (ctx-add-alist a ctx)
+      (display (format "Adding ~a to context ~a\n" a ctx))
+      (append a ctx))
 
     (define (apply-to-element x context)
       (cond
@@ -118,7 +135,7 @@ Additional parameters may include strings for opening and closing delimiters"
           (if v
               (cdr v)
               (error "Context does not include key"
-                     x)))]
+                     x context)))]
        [(list? x)
         ;; Special cases are more complicated
         (match x
@@ -129,7 +146,14 @@ Additional parameters may include strings for opening and closing delimiters"
                      (eq? '() (cdr v)))
                  ""
                  (let lp ([v (cdr v)]
-                       [rest '()])
+                          [rest '()])
+                   (display (format "v: ~a rest: ~a\n" v rest))
+                   (display (format "alist? ~a notlist? ~a nil? ~a alistcar?  notpair? ~a\n"
+                                    (alist? v)
+                                    (not (list? v))
+                                    (eq? '() v)
+                                    ;(alist? (car v))
+                                    (not (pair? v))))
                    (cond
                     [(not (list? v)) ;
                      (if (eq? rest '())
@@ -141,11 +165,21 @@ Additional parameters may include strings for opening and closing delimiters"
                           (lp (car rest) (cdr rest))))]
                     [(eq? '() v)
                      ""]
-                    [(not (list? (car v))) ; Inside is a single list
+                    [(alist? (car v)) ; v should be a list of alist
                      (lp (car v) (cdr v))]
-                     [else (error "Unimplemented")]
+                    [(alist? v)
+                     (if (eq? rest '())
+                         (apply-template sub
+                                         (ctx-add-alist v context))
+                         (string-append
+                          (apply-template sub
+                                          (ctx-add-alist v context))
+                          (lp (car rest) (cdr rest))))]
+                    [(not (pair? (car v))) ; v is a single list
+                     (lp (car v) (cdr v))]
+                    [else (error "Wrong value for context value" v)]
                      ))))]
-                    
+          
           [('unless tag sub)
            (let ([v (assoc tag context)])
              (if (or (eq? #f v)
@@ -155,7 +189,7 @@ Additional parameters may include strings for opening and closing delimiters"
                  ""))]
           [_ (error "WTF?!" x)]
           )]
-       [else (error "Template should be a list of string and symbols" template)]))
+       [else (error "Template should be a list of string and symbols" e)]))
     
     (define (apply-template template context)
       "Apply template with values given by context

@@ -33,3 +33,29 @@
 
 (display (apply-template tpl2 '()))
 (display (apply-template tpl2 '((pred . "whatever"))))
+
+
+(define complex
+  "ANIMAL NOISES
+=============
+{{#animals}} * {{name}}: \"{{noise}}\"
+{{/animals}}
+")
+
+(define cat
+  '((name . "cat")
+    (noise . "meow")))
+
+(define dog
+  '((name . "dog")
+    (noise . "woof")))
+
+
+(define complex-ctx
+  `((animals . (,cat ,dog))))
+
+
+
+(define tpl-cplx (process-template complex))
+
+(display (apply-template tpl-cplx complex-ctx))
