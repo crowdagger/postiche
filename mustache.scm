@@ -48,19 +48,13 @@
     
     (define (handle-hard tag s o-d c-d)
       "Hande complex cases such as conditionals or lists."
-      (display "Handling ")
-      (display tag)
-      (newline)
       (let*-values ([(special tag closing) (unwrap-tag tag o-d c-d)]
                     [(before after) (find-closing-tag s closing)])
         (cons (list (case special
                      [(#{#}#) 'for]
                      [(^) 'unless])
                     (string->symbol tag)
-                    (begin (display "before: ")
-                           (display before)
-                           (newline)
-                           (find-opening before o-d c-d)))
+                    (find-opening before o-d c-d))
               (find-opening after
                             o-d
                             c-d))
@@ -119,12 +113,10 @@ Additional parameters may include strings for opening and closing delimiters"
 
     (define (ctx-add-value v ctx)
       "Adds a singe value (bound to '.) to ctx"
-      (display (format "Adding ~a to context ~a\n" v ctx))
       (append `(( ,(string->symbol ".") . ,(format "~a" v)))
               ctx))
 
     (define (ctx-add-alist a ctx)
-      (display (format "Adding ~a to context ~a\n" a ctx))
       (append a ctx))
 
     (define (apply-to-element x context)
@@ -147,13 +139,6 @@ Additional parameters may include strings for opening and closing delimiters"
                  ""
                  (let lp ([v (cdr v)]
                           [rest '()])
-                   (display (format "v: ~a rest: ~a\n" v rest))
-                   (display (format "alist? ~a notlist? ~a nil? ~a alistcar?  notpair? ~a\n"
-                                    (alist? v)
-                                    (not (list? v))
-                                    (eq? '() v)
-                                    ;(alist? (car v))
-                                    (not (pair? v))))
                    (cond
                     [(not (list? v)) ;
                      (if (eq? rest '())
@@ -195,9 +180,6 @@ Additional parameters may include strings for opening and closing delimiters"
       "Apply template with values given by context
 
 Context must be an association list"
-      (display "context: ")
-      (write context)
-      (newline)
       (apply string-append
              (map (lambda (x)
                     (apply-to-element x context))
