@@ -80,6 +80,10 @@
 "
     (apply-template tpl-cplx complex-ctx))
 
+
+  (define my-tpl (process-template "Some «adj» delimiters" "«" "»"))
+  (test-equal "Some unusual delimiters"
+               (apply-template my-tpl '((adj . "unusual"))))
   )
 
 

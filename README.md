@@ -216,6 +216,20 @@ Output:
 A little silly example
 ```
 
+## Changing delimiters
+
+Depending of the language you are writing in, `{{` and `}}` delimiters
+might be annoying. It is possible to modify them by giving additional
+argument to `process-template`:
+
+```scheme
+(define my-tpl (process-template "Some «adj» delimiters" "«" "»"))
+(display (apply-template my-tpl
+                         '((adj . unusual))))
+; displays "Some unusual delimiters"
+```
+
+
 ## Escaping
 
 No HTML escaping or any escaping. 
