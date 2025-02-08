@@ -5,10 +5,11 @@
           (srfi srfi-13)
           (srfi srfi-28)
           (ice-9 match))
-  (export process-template apply-template alist?)
+  (export process-template apply-template alist?
+          assoc-deep)
   (begin
     (define (alist? x)
-      "Returs #t if x is a valid list of (x . y) pairs"
+      "Returns #t if x is a valid list of (x . y) pairs"
       (match x
         ('() #t)
         (((foo . bar) . rest)
@@ -18,6 +19,24 @@
              (alist? rest)))
       (_ #f)))
 
+    (define (assoc-deep keys alist)
+      "Like assoc, but search with a list of keys in a possibly
+nested alist"
+      (if (null? keys)
+          alist
+          (if (not (list? alist))
+              (error "Not an AList" alist)
+              (let* ([key (car keys)]
+                     [rest (cdr keys)]
+                     [value (assoc key alist)])
+                (display "Looking for ")
+                (display key)
+                (newline)
+                (if (eq? #f value)
+                    #f ; Found no value, return false
+                    (assoc-deep rest ; Found value, look deeper
+                                (cdr value)))))))
+                 
     
     (define (unwrap-tag tag o-d c-d)
       "Unwrap a tag starting with # or ^ and returns multiple values:
