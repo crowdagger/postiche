@@ -5,6 +5,17 @@
 
 
 (test-begin "template")
+(test-group "assoc-deep"
+  (define alist
+    '((a . 42)
+      (b . ((a . 0)))))
+
+  (test-equal 42 (assoc-deep '(a) alist))
+  (test-equal #f (assoc-deep '(c) alist))
+  (test-equal 0 (assoc-deep '(b a) alist))
+  (test-error (assoc-deep '(a b c) alist))
+  )
+
 (test-group "process-template"
   (define tpl1 (process-template "foo"))
   (test-equal tpl1 '("foo"))
