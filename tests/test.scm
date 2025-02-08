@@ -16,6 +16,17 @@
   (test-error (assoc-deep '(a b c) alist))
   )
 
+(test-group "assoc-str"
+  (define alist
+    '((a . 42)
+      (b . ((a . 0)))))
+
+  (test-equal 42 (assoc-str "a" alist))
+  (test-equal #f (assoc-str "c" alist))
+  (test-equal 0 (assoc-str "b.a" alist))
+  (test-error (assoc-str "a.b.c" alist))
+  )
+
 (test-group "process-template"
   (define tpl1 (process-template "foo"))
   (test-equal tpl1 '("foo"))

@@ -3,10 +3,11 @@
           (scheme write)
           (srfi srfi-11)
           (srfi srfi-13)
+          (srfi srfi-14)
           (srfi srfi-28)
           (ice-9 match))
   (export process-template apply-template alist?
-          assoc-deep)
+          assoc-deep assoc-str)
   (begin
     (define (alist? x)
       "Returns #t if x is a valid list of (x . y) pairs"
@@ -36,6 +37,22 @@ nested alist"
                     #f ; Found no value, return false
                     (assoc-deep rest ; Found value, look deeper
                                 (cdr value)))))))
+
+    (define _char-set (char-set-complement (char-set #\.)))
+    
+    (define (assoc-str str alist)
+      "Get the key identified by the symbols present in str, separated by .
+
+Example:
+(assoc-str \"foo.bar\" alist) ===
+(assoc 'bar (assoc 'foo alist))"
+      (let* ([keys (string-tokenize str _char-set)]
+             [keys (map string->symbol
+                        keys)])
+        (display "keys: ")
+        (display keys)
+        (newline)
+        (assoc-deep keys alist)))
                  
     
     (define (unwrap-tag tag o-d c-d)
