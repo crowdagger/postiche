@@ -18,6 +18,16 @@
 
 (display (apply-template (process-template template1) ctx1))
 
+(define template1bis
+  "* {{cat.name}}
+* {{cat.color}}
+")
+(define ctx1bis
+  '((cat . (( name . "Pipoune")
+            (color . "Orange")))))
+
+(display (apply-template (process-template template1bis) ctx1bis))
+
 (define tpl2 (process-template "This is a {{^pred}}silly {{/pred}} example\n"))
 
 (display (apply-template tpl2 '()))

@@ -54,6 +54,18 @@
     tpl6)
   )
 
+(test-group "apply-nested"
+  (define template
+    "* {{cat.name}}
+* {{cat.color}}")
+  (define ctx
+  '((cat . (( name . "Pipoune")
+            (color . "Orange")))))
+  
+  (test-equal "* Pipoune\n* Orange"
+    (apply-template (process-template template) ctx))
+  )
+
 (test-group "apply-template"
   (define tpl2 (process-template "foo{{bar}}baz"))
   (test-equal (apply-template tpl2 '((bar . "42"))) "foo42baz")
