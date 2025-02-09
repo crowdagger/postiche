@@ -185,7 +185,7 @@ Template:
 ```
 ANIMAL NOISES
 =============
-{{#animals}} * {{name}}: \"{{noise}}\"
+{{#animals}} * {{name}}: "{{noise}}"
 {{/animals}}
 ```
 
