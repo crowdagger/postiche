@@ -38,6 +38,7 @@ nested alist"
                     (assoc-deep rest ; Found value, look deeper
                                 (cdr value)))))))
 
+    ;;; string-split isn't in SRFI-13, so we have to use string-tokenize instead
     (define _char-set (char-set-complement (char-set #\.)))
     
     (define (assoc-str str alist)
@@ -158,10 +159,17 @@ Additional parameters may include strings for opening and closing delimiters"
     (define (apply-to-element x context)
       (cond
        [(string? x) x]
-       [(symbol? x)
+       [(eq? x '.) ; special case for "." lookup
         (let ([v (assoc x context)])
           (if v
               (cdr v)
+              (error "Context does not include key"
+                     x context)))]
+       [(symbol? x)
+        (let* ([s (symbol->string x)]
+               [v (assoc-str s context)])
+          (if v
+              v
               (error "Context does not include key"
                      x context)))]
        [(list? x)
