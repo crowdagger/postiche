@@ -56,6 +56,29 @@ Output:
 * orange
 ```
 
+Like Mustache, it is possible to access nested elements using the `.`
+syntax in a tag:
+
+Template:
+
+```
+* {{cat.name}}
+* {{cat.color}}
+```
+
+Context:
+```scheme
+'((cat . ((name . "Pipoune")
+          (color . "Orange"))))
+```
+
+Output:
+
+```
+* Pipoune
+* Orange
+```
+
 ### Sections
 
 Sections allow for conditionals and/or list. A section starts with
